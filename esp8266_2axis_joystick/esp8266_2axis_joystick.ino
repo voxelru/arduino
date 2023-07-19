@@ -1,14 +1,42 @@
+int mapAndAdjustJoystickDeadBandValues(int value, bool reverse)
+{
+  if (value >= 610)
+  {
+    value = map(value, 610, 905, 127, 255);
+  }
+  else if (value <= 600)
+  {
+      value = map(value, 18, 600, 0, 127);
+  }
+  else
+  {
+    value = 127;
+  }
+
+  if (reverse)
+  {
+    value = 255 - value;
+  }
+  return value;
+}
+
 void read_joystick(int read_x, int read_y) {
-  int x, y;
+  int x, y, x0, y0, z;
   char buffer[100];
+
   digitalWrite(read_x, HIGH);
-  x = analogRead(A0);
+  x0 = analogRead(A0);
+  x = mapAndAdjustJoystickDeadBandValues(x0, true);
   digitalWrite(read_x, LOW);
+
   digitalWrite(read_y, HIGH);
-  y = analogRead(A0);
+  y0 = analogRead(A0);
+  y = mapAndAdjustJoystickDeadBandValues(y0, false);
   digitalWrite(read_y, LOW);
 
-  sprintf (buffer, "x: %d y: %d\n", x, y);
+  z = digitalRead(D7);
+
+  sprintf (buffer, "x0: %d x: %d\n y0: %d y: %d\n  z: %d\n", x0, x, y0, y, z);
   Serial.print(buffer);
 }
 
