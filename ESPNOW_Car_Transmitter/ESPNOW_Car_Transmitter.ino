@@ -24,22 +24,24 @@ PacketData data;
 //So we need to add some deadband to center value. in our case 1800-2200. Any value in this deadband range is mapped to center 127.
 int mapAndAdjustJoystickDeadBandValues(int value, bool reverse)
 {
-  if (value >= 610)
-  {
-    value = map(value, 610, 905, 127, 254);
-  }
-  else if (value <= 600)
-  {
-      value = map(value, 18, 600, 0, 127);
-  }
-  else
-  {
-    value = 127;
-  }
+//  if (value >= 610)
+//  {
+  //  value = map(value, 610, 905, 127, 254);
+  value = (round((float)value / 900.0 * 2.0))-1.0;
+//  }
+//  else if (value <= 600)
+//  {
+//      value = map(value, 18, 600, 0, 127);
+//  }
+//  else
+//  {
+//    value = 127;
+//  }
 
   if (reverse)
   {
-    value = 254 - value;
+//    value = 254 - value;
+    value = -value;
   }
   return value;
 }

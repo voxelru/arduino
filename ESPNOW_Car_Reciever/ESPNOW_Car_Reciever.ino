@@ -71,8 +71,65 @@ void setup() {
   } else {
     Serial.println("Success registering callback");
   }
+
+  pinMode(5, OUTPUT); // motor A скорость
+  pinMode(4, OUTPUT); // motor B скорость
+  pinMode(0, OUTPUT); //  motor A направление
+  pinMode(2, OUTPUT); //  motor B направление
+
+  myData.xAxisValue = 0;
+  myData.yAxisValue = 0;
+  myData.switchPressed = 0;
 }
 
+
+// останов
+void stop(void) {     
+   analogWrite(5, 0);     
+     analogWrite(4, 0); 
+}  
+// вперед 
+void forward(void) {
+     analogWrite(5, 1023); analogWrite(4, 1023);
+     digitalWrite(0, HIGH);digitalWrite(2, HIGH); 
+}  
+// назад 
+void backward(void) {
+     analogWrite(5, 1023);analogWrite(4, 1023);
+     digitalWrite(0, LOW);digitalWrite(2, LOW); 
+}   
+// влево
+void left(void) {
+     analogWrite(5, 1023);analogWrite(4, 1023);
+     digitalWrite(0, LOW);digitalWrite(2, HIGH);
+}   
+// вправо
+void right(void) {
+     analogWrite(5, 1023);analogWrite(4, 1023);
+     digitalWrite(0, HIGH); digitalWrite(2, LOW); 
+}   
+
+
 void loop() {
-  
+  int direction;
+
+  if (myData.xAxisValue == 255 && myData.yAxisValue == 0) {direction=3;}
+  else if (myData.xAxisValue == 1 && myData.yAxisValue == 0) {direction=4;}
+  else if (myData.xAxisValue == 0 && myData.yAxisValue == 1) {direction=1;}
+  else if (myData.xAxisValue == 0 && myData.yAxisValue == 255) {direction=2;}
+  else if (myData.xAxisValue == 0 && myData.yAxisValue == 0) {direction=5;}
+
+  // выбор для кнопок         
+  switch (direction) {
+    case 1:  left();
+      break;             
+    case 2:  right();
+      break;
+    case 3:  forward();
+      break;
+    case 4:  backward();
+      break;             
+    case 5:  stop(); 
+      break; 
+  }
 }
