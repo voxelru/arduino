@@ -12,8 +12,8 @@ uint8_t receiverMacAddress[] = {0xE8,0xDB,0x84,0xDE,0xE6,0x16};  //E8:DB:84:DE:E
 
 struct PacketData
 {
-  byte xAxisValue;
-  byte yAxisValue;
+  int xAxisValue;
+  int yAxisValue;
   byte switchPressed;
 };
 PacketData data;
@@ -24,19 +24,19 @@ PacketData data;
 //So we need to add some deadband to center value. in our case 1800-2200. Any value in this deadband range is mapped to center 127.
 int mapAndAdjustJoystickDeadBandValues(int value, bool reverse)
 {
-//  if (value >= 610)
-//  {
-  //  value = map(value, 610, 905, 127, 254);
-  value = (round((float)value / 900.0 * 2.0))-1.0;
-//  }
-//  else if (value <= 600)
-//  {
-//      value = map(value, 18, 600, 0, 127);
-//  }
-//  else
-//  {
-//    value = 127;
-//  }
+  if (value >= 650)
+  {
+      value = map(value, 650, 905, 0, 127);
+//  value = (round((float)value / 900.0 * 254.0))-127.0;
+  }
+  else if (value <= 550)
+  {
+      value = map(value, 0, 550, -127, 0);
+  }
+  else
+  {
+    value = 0;
+  }
 
   if (reverse)
   {
@@ -139,14 +139,10 @@ void loop()
 //  sprintf (buffer, "x: %d y: %d z: %d\n", data.xAxisValue, data.yAxisValue, data.switchPressed);
 //  Serial.print(buffer);
 
-  delay(100);
+  delay(50);
 
   int result = esp_now_send(receiverMacAddress, (uint8_t *) &data, sizeof(data));
-  if (result == ERR_OK) 
-  {
-    Serial.println("Sent with success");
-  }
-  else 
+  if (result != ERR_OK) 
   {
     Serial.println("Error sending the data");
   }
